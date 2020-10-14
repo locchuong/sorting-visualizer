@@ -1,3 +1,4 @@
+// Handles rendering the footer for the page (Contacts)
 import React from "react";
 import github from './media/github.png';
 import handshake from './media/handshake.png';
