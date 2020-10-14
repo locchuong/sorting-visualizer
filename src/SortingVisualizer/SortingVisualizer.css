@@ -62,3 +62,23 @@ button:hover {
     padding: 5px;
     width: 33%;
 }
+.footer {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    background-color: black;
+    padding: 10px;
+    margin-top: 40px;
+}
+#githublogo {
+    filter:invert(1);
+    margin-left: 30px;
+}
+#handshakelogo {
+    filter: grayscale(1);
+    margin-left: 30px;
+    margin-top: 5px;
+}
+.footer > h2 {
+    color: white;
+}

@@ -1,8 +1,7 @@
 import React from "react";
-//import logo from './logo.svg';
 import SortingVisualizer from "./SortingVisualizer/SortingVisualizer";
 import "./App.css";
-
+import Footer from "./footer";
 function App() {
   return (
     <div className="App">
@@ -10,6 +9,7 @@ function App() {
         <h1> SORTING VISUALIZER </h1>
       </div>
         <SortingVisualizer ></SortingVisualizer>
+        <Footer></Footer>
     </div>
   );
 }

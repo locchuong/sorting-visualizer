@@ -1,31 +1,31 @@
 import React from "react";
 import "./SortingVisualizer.css";
 import * as sortingAlgorithms from "../sortingAlgorithms/sortingAlgorithms";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import RangeSlider from "react-bootstrap-range-slider";
-import { Form, Col, Row } from "react-bootstrap";
 
-const PRIMARY_COLOR = "red";
-const SECONDARY_COLOR = "blue";
-const FINISH_COLOR = "green";
-const SWAP = 3;
+const PRIMARY_COLOR = "red"; // Unsorted array bar color
+const SECONDARY_COLOR = "blue"; // Comparing array bar color
+const FINISH_COLOR = "green"; // Sorted array bar color
+const SWAP = 3; // Signifies to animations array to swap values in array bars
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      array: [],
-      ANIMATION_SPEED: 1,
-      size: 100,
+      array: [], // Array of numbers of size this.state.size
+      ANIMATION_SPEED: 1, // Animation speed (for visibility)
+      size: 100, // Size of array
     };
   }
-
+  
+  // Runs when component has mounted
   componentDidMount() {
     this.resetArray(this.state.size);
   }
 
+  // Resets unsorted array
   resetArray(size) {
     const arrayBars = document.getElementsByClassName("array-bar");
     for (let bar of arrayBars) {
@@ -38,6 +38,7 @@ export default class SortingVisualizer extends React.Component {
     this.setState({ array });
   }
 
+  // Handles creating and reading animations array
   sort(algo) {
     const animations = this.getAnimations(algo);
     const arrayBars = document.getElementsByClassName("array-bar");
@@ -65,6 +66,8 @@ export default class SortingVisualizer extends React.Component {
       }
     }
   }
+
+  // Handles sorting algorithm to use
   getAnimations(algo) {
     switch (algo) {
       case 0:
@@ -83,13 +86,8 @@ export default class SortingVisualizer extends React.Component {
         return sortingAlgorithms.quickSortAnimations(this.state.array);
     }
   }
-  updateArrBars() {
-    const arrayBars = document.getElementsByClassName("array-bar");
-    for(let i of this.state.size) {
-      arrayBars[i].style.height = `${this.state.array[i]}px`;
-    }
-  }
 
+  // Handles rendering the component
   render() {
     const { array } = this.state;
     return (
@@ -104,7 +102,9 @@ export default class SortingVisualizer extends React.Component {
           ))}
         </div>
         <div className="controls">
-          <button id="resetbtn" onClick={() => this.resetArray(this.state.size)}>
+          <button
+            id="resetbtn"
+            onClick={() => this.resetArray(this.state.size)}>
             Generate New Array
           </button>
           <button onClick={() => this.sort(0)}>Merge Sort</button>
