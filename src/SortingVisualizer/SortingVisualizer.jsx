@@ -1,6 +1,11 @@
 import React from "react";
 import "./SortingVisualizer.css";
-import * as sortingAlgorithms from "../sortingAlgorithms/sortingAlgorithms";
+import mergeSortAnimations from "../sortingAlgorithms/mergeSort.js"
+import quickSortAnimations from "../sortingAlgorithms/quickSort.js"
+import heapSortAnimations from "../sortingAlgorithms/heapSort.js"
+import bubbleSortAnimations from "../sortingAlgorithms/bubbleSort.js"
+import selectionSortAnimations from "../sortingAlgorithms/selectionSort.js"
+import shellSortAnimations from "../sortingAlgorithms/shellSort.js"
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import RangeSlider from "react-bootstrap-range-slider";
@@ -8,15 +13,26 @@ import RangeSlider from "react-bootstrap-range-slider";
 const PRIMARY_COLOR = "red"; // Unsorted array bar color
 const SECONDARY_COLOR = "blue"; // Comparing array bar color
 const FINISH_COLOR = "green"; // Sorted array bar color
-const SWAP = 3; // Signifies to animations array to swap values in array bars
+const MERGESORT = 0;
+const QUICKSORT = 1;
+const HEAPSORT = 2;
+const BUBBLESORT = 3;
+const SELECTIONSORT = 4;
+const SHELLSORT = 5;
+
+const PRIMARY_COLOR_EVENT = 1;
+const SECONDARY_COLOR_EVENT  = 0;
+const SWAP_EVENT = 3; // Signifies to animations array to swap values in array bars
+// const FINISH_COLOR_EVENT = 2;
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       array: [], // Array of numbers of size this.state.size
-      ANIMATION_SPEED: 1, // Animation speed (for visibility)
+      ANIMATION_DELAY: 1, // Animation speed (for visibility)
       size: 100, // Size of array
+      isInputDisabled: false,
     };
   }
   
@@ -40,16 +56,17 @@ export default class SortingVisualizer extends React.Component {
 
   // Handles creating and reading animations array
   sort(algo) {
-    const animations = this.getAnimations(algo);
+    this.setState({isInputDisabled: true});
+    const [animations, arr] = this.getAnimations(algo);
     const arrayBars = document.getElementsByClassName("array-bar");
     // Go through each animation "frame"
     for (let i = 0; i < animations.length; i++) {
       const [event, valA, valB] = animations[i];
-      if (event !== SWAP) {
+      if (event !== SWAP_EVENT) {
         let color =
-          event === 0
+          event === SECONDARY_COLOR_EVENT
             ? SECONDARY_COLOR
-            : event === 1
+            : event === PRIMARY_COLOR_EVENT
             ? PRIMARY_COLOR
             : FINISH_COLOR;
         const aStyle = arrayBars[valA].style;
@@ -57,33 +74,36 @@ export default class SortingVisualizer extends React.Component {
         setTimeout(() => {
           aStyle.backgroundColor = color;
           bStyle.backgroundColor = color;
-        }, i * this.state.ANIMATION_SPEED);
+        }, i * this.state.ANIMATION_DELAY);
       } else {
         const style = arrayBars[valA].style;
         setTimeout(() => {
           style.height = `${valB}px`;
-        }, i * this.state.ANIMATION_SPEED);
+        }, i * this.state.ANIMATION_DELAY);
       }
     }
+    setTimeout(() => {
+      this.setState({isInputDisabled: false, array: arr});
+    }, animations.length * this.state.ANIMATION_DELAY);
   }
 
   // Handles sorting algorithm to use
   getAnimations(algo) {
     switch (algo) {
-      case 0:
-        return sortingAlgorithms.mergeSortAnimations(this.state.array);
-      case 1:
-        return sortingAlgorithms.quickSortAnimations(this.state.array);
-      case 2:
-        return sortingAlgorithms.heapSortAnimations(this.state.array);
-      case 3:
-        return sortingAlgorithms.bubbleSortAnimations(this.state.array);
-      case 4:
-        return sortingAlgorithms.selectionSortAnimations(this.state.array);
-      case 5:
-        return sortingAlgorithms.shellSortAnimations(this.state.array);
+      case MERGESORT:
+        return mergeSortAnimations(this.state.array);
+      case QUICKSORT:
+        return quickSortAnimations(this.state.array);
+      case HEAPSORT:
+        return heapSortAnimations(this.state.array);
+      case BUBBLESORT:
+        return bubbleSortAnimations(this.state.array);
+      case SELECTIONSORT:
+        return selectionSortAnimations(this.state.array);
+      case SHELLSORT:
+        return shellSortAnimations(this.state.array);
       default:
-        return sortingAlgorithms.quickSortAnimations(this.state.array);
+        return quickSortAnimations(this.state.array);
     }
   }
 
@@ -104,19 +124,20 @@ export default class SortingVisualizer extends React.Component {
         <div className="controls">
           <button
             id="resetbtn"
+            disabled={this.state.isInputDisabled}
             onClick={() => this.resetArray(this.state.size)}>
             Generate New Array
           </button>
-          <button onClick={() => this.sort(0)}>Merge Sort</button>
-          <button onClick={() => this.sort(1)}>Quick Sort</button>
-          <button onClick={() => this.sort(2)}>Heap Sort</button>
-          <button onClick={() => this.sort(3)}>Bubble Sort</button>
-          <button onClick={() => this.sort(4)}>Selection Sort</button>
-          <button onClick={() => this.sort(5)}>Shell Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(MERGESORT)}>Merge Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(QUICKSORT)}>Quick Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(HEAPSORT)}>Heap Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(BUBBLESORT)}>Bubble Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(SELECTIONSORT)}>Selection Sort</button>
+          <button disabled={this.state.isInputDisabled} onClick={() => this.sort(SHELLSORT)}>Shell Sort</button>
           <div className="animations">
-            <h4> Animation Speed </h4>
+            <h4> Animation Delay </h4>
             <RangeSlider
-              value={this.state.ANIMATION_SPEED}
+              value={this.state.ANIMATION_DELAY}
               min={0}
               max={10}
               size="sm"
@@ -124,7 +145,7 @@ export default class SortingVisualizer extends React.Component {
               tooltipPlacement="top"
               variant="success"
               onChange={(changeEvent) =>
-                this.setState({ ANIMATION_SPEED: changeEvent.target.value })
+                this.setState({ ANIMATION_DELAY: changeEvent.target.value })
               }
             />
             <h4> Array Size </h4>

@@ -5,7 +5,7 @@ import Footer from "./footer";
 function App() {
   return (
     <div className="App">
-      <div class="header">
+      <div className="header">
         <h1> SORTING VISUALIZER </h1>
       </div>
         <SortingVisualizer ></SortingVisualizer>

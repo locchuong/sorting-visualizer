@@ -57,6 +57,9 @@ button:hover {
     color: white;
     bottom: 2px;
 }
+button:disabled {
+    background-color: red;
+}
 .animations {
     margin-left: 50px;
     padding: 5px;
